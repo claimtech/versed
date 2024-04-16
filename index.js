@@ -1,18 +1,21 @@
 'use strict';
 
-import { readdirSync } from 'fs';
-import * as url from 'node:url';
-import { fileURLToPath, pathToFileURL } from 'url';
-import { join, basename, extname, dirname } from 'path';
-import express, { static as staticfiles, urlencoded, json } from 'express';
-import multer, { memoryStorage } from 'multer';
-import rfc2047 from 'rfc2047';
-import Debug from 'debug';
-import { mimetype as _mimetype } from './util.js';
-import Middleware from './middleware.js';
 import { randomUUID } from 'crypto';
-const debug = Debug('versed');
+import { readdirSync } from 'fs';
+import { basename, dirname, extname, join } from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 
+import cors from 'cors';
+import Debug from 'debug';
+import express, { json, static as staticfiles, urlencoded } from 'express';
+import multer, { memoryStorage } from 'multer';
+import * as url from 'node:url';
+import rfc2047 from 'rfc2047';
+
+import Middleware from './middleware.js';
+import { mimetype as _mimetype } from './util.js';
+
+const debug = Debug('versed');
 
 // const __filename = new URL(import.meta.url).pathname;
 // const __dirname = path.dirname(__filename);
@@ -32,6 +35,11 @@ readdirSync(join(__dirname, 'middleware')).forEach(async function(file) {
 
 // Create express app
 const app = express();
+const corsOptions = {
+    origin: 'https://sandbox.claim.tech, https://api.claim.tech'
+};
+
+app.use(cors(corsOptions));
 
 app.use(staticfiles('public'));
 app.use(urlencoded({extended: true}));
